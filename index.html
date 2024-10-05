@@ -4,25 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <title>Adek Aplicatin</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <title>Adek Application</title>
   </head>
   <body>
     <nav class="sidebar close">
       <header>
         <div class="imagetext">
           <span class="image">
-            <img src="img/logo.png" alt="logo" />
+            <img src="img/logo.png" alt="Adek Company Logo" />
           </span>
           <div class="text header-text">
             <span class="company">Adek Company</span>
             <span class="profession">Admin</span>
           </div>
         </div>
-        <i class="bx bx-chevron-right toggle"></i>
+        <i class="bx bx-chevron-right toggle" aria-label="Toggle Sidebar"></i>
       </header>
 
       <div class="menu-bar">
@@ -31,25 +28,25 @@
             <li class="navigation-link">
               <a href="#" onclick="showContent('dashbord')">
                 <i class="bx bx-home-alt-2 icon"></i>
-                <span class="text nav-text">Dashbord</span>
+                <span class="text nav-text">Dashboard</span>
               </a>
             </li>
             <li class="navigation-link">
               <a href="#" onclick="showContent('daftarMenu')">
                 <i class="bx bx-food-menu icon"></i>
-                <span class="text nav-text">Daftar menu</span>
+                <span class="text nav-text">Daftar Menu</span>
               </a>
             </li>
             <li class="navigation-link">
               <a href="#" onclick="showContent('dataPengguna')">
                 <i class="bx bx-user icon"></i>
-                <span class="text nav-text">Data pengguna</span>
+                <span class="text nav-text">Data Pengguna</span>
               </a>
             </li>
             <li class="navigation-link">
               <a href="#" onclick="showContent('daftarBuku')">
                 <i class="bx bx-book icon"></i>
-                <span class="text nav-text">Daftar buku</span>
+                <span class="text nav-text">Daftar Buku</span>
               </a>
             </li>
             <li class="navigation-link">
@@ -61,16 +58,16 @@
             <li class="navigation-link">
               <a href="#" onclick="showContent('dataKonsultan')">
                 <i class="bx bx-plus-medical icon"></i>
-                <span class="text nav-text">Data konsultan</span>
+                <span class="text nav-text">Data Konsultan</span>
               </a>
             </li>
           </ul>
         </div>
         <div class="bottom-content">
-          <li class="">
-            <a href="">
+          <li>
+            <a href="#">
               <i class="bx bx-log-out icon"></i>
-              <span class="text nav-text">Log out</span>
+              <span class="text nav-text">Log Out</span>
             </a>
           </li>
         </div>
@@ -81,7 +78,7 @@
       <div class="text">
         <div id="dashbord" class="content">
           <div class="head">
-            <h2>Dashbord</h2>
+            <h2>Dashboard</h2>
           </div>
         </div>
 
@@ -92,22 +89,22 @@
 
         <div id="dataPengguna" class="content" style="display: none">
           <div class="head">
-            <div class="head-container">Data pengguna</div>
+            <div class="head-container">Data Pengguna</div>
           </div>
 
           <div class="container">
             <div class="search-plus-container" id="searchPlusContainer">
-              <div class="plus" id="addButton">
-                    <i class='bx bxs-plus-circle'></i>
+              <div class="plus" id="addButton" aria-label="Add User">
+                <i class='bx bxs-plus-circle'></i>
               </div>
               <div class="search">
-                  <i class='bx bx-search-alt-2'></i>
-                  <input class="search-input" type="search" placeholder="Search">
+                <i class='bx bx-search-alt-2'></i>
+                <input class="search-input" type="search" placeholder="Search">
               </div>
-          </div>
-          <div class="header-title" id="formTitle">Tambah Data Anggota</div>
+            </div>
+            <div class="header-title" id="formTitle">Tambah Data Anggota</div>
             <div class="table-container" id="tableContainer">
-              <table border ="1" cellpadding="10" cellspacing="0">
+              <table border="1" cellpadding="10" cellspacing="0">
                 <thead>
                   <tr>
                     <th>ID User</th>
@@ -117,6 +114,7 @@
                     <th>No HP</th>
                     <th>Berat Badan</th>
                     <th>Tinggi Badan</th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -124,40 +122,40 @@
             </div>
             <div class="form-container" id="formContainer">
               <form id="dataForm">
-                  <div class="form-group">
-                      <label for="idUser">ID User</label>
-                      <input type="text" id="idUser" name="idUser" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="namaLengkap">Nama Lengkap</label>
-                      <input type="text" id="namaLengkap" name="namaLengkap" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="email">Email</label>
-                      <input type="email" id="email" name="email" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="password">Password</label>
-                      <input type="password" id="password" name="password" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="noHp">No HP</label>
-                      <input type="tel" id="noHp" name="noHp" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="beratBadan">Berat Badan</label>
-                      <input type="number" id="beratBadan" name="beratBadan" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="tinggiBadan">Tinggi Badan</label>
-                      <input type="number" id="tinggiBadan" name="tinggiBadan" required>
-                  </div>
-                  <div class="button-group">
-                      <button type="submit" class="button button-save">Simpan</button>
-                      <button type="button" class="button button-cancel" id="cancelButton">Batal</button>
-                  </div>
+                <div class="form-group">
+                  <label for="idUser">ID User</label>
+                  <input type="text" id="idUser" name="idUser" required />
+                </div>
+                <div class="form-group">
+                  <label for="namaLengkap">Nama Lengkap</label>
+                  <input type="text" id="namaLengkap" name="namaLengkap" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" required />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" id="password" name="password" required />
+                </div>
+                <div class="form-group">
+                  <label for="noHp">No HP</label>
+                  <input type="tel" id="noHp" name="noHp" required />
+                </div>
+                <div class="form-group">
+                  <label for="beratBadan">Berat Badan</label>
+                  <input type="number" id="beratBadan" name="beratBadan" required />
+                </div>
+                <div class="form-group">
+                  <label for="tinggiBadan">Tinggi Badan</label>
+                  <input type="number" id="tinggiBadan" name="tinggiBadan" required />
+                </div>
+                <div class="button-group">
+                  <button type="submit" class="button button-save">Simpan</button>
+                  <button type="button" class="button button-cancel" id="cancelButton">Batal</button>
+                </div>
               </form>
-          </div>
+            </div>
           </div>
         </div>
 
@@ -177,6 +175,8 @@
         </div>
       </div>
     </section>
+
+    
 
     <script src="script.js"></script>
   </body>

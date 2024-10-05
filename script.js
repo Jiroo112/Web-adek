@@ -6,7 +6,6 @@ const body = document.querySelector("body"),
         sidebar.classList.toggle("close");
       });
 
-      
       function showContent(contentId) {
         // Sembunyikan semua konten
         var contents = document.getElementsByClassName('content');
@@ -20,43 +19,36 @@ const body = document.querySelector("body"),
 
     // Fungsi untuk mengambil data dari ambil_data.php dan menampilkannya di tabel
     function loadData() {
-      var xhr = new XMLHttpRequest(); 
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "fetch_data.php", true);
+        xhr.onload = function() {
+          if (this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            var output = '';
+            var pengguna = data.data_pengguna;
       
-      xhr.open("GET", "fetch_data.php", true); 
-      xhr.onload = function() { 
-          // Memeriksa status respons
-          if (this.status == 200) { 
-              // Mengonversi respons JSON menjadi objek JavaScript
-              var data = JSON.parse(this.responseText); 
-              var output = ''; // Variabel untuk menyimpan HTML tabel
-  
-              // Mengakses data dari tabel data_pengguna
-              var pengguna = data.data_pengguna;
-  
-              // Looping data dari data_pengguna dan tambahkan baris ke tabel
-              for (var i in pengguna) { 
-                  // Menambahkan baris baru untuk tabel
-                  output += '<tr>' + 
-                            '<td>' + pengguna[i].id_user + '</td>' + 
-                            '<td>' + pengguna[i].nama_lengkap + '</td>' + 
-                            '<td>' + pengguna[i].email + '</td>' + 
-                            '<td>' + pengguna[i].password + '</td>' + 
-                            '<td>' + pengguna[i].no_hp + '</td>' + 
-                            '<td>' + pengguna[i].berat_badan + '</td>' + 
-                            '<td>' + pengguna[i].tinggi_badan + '</td>' + 
-                            '</tr>';
-              }
-  
-              // Memasukkan hasil ke dalam elemen dengan id tableBody
-              document.getElementById('tableBody').innerHTML = output; 
+            for (var i in pengguna) {
+              output += '<tr>' + 
+                        '<td>' + pengguna[i].id_user + '</td>' + 
+                        '<td>' + pengguna[i].nama_lengkap + '</td>' + 
+                        '<td>' + pengguna[i].email + '</td>' + 
+                        '<td>' + pengguna[i].password + '</td>' + 
+                        '<td>' + pengguna[i].no_hp + '</td>' + 
+                        '<td>' + pengguna[i].berat_badan + '</td>' + 
+                        '<td>' + pengguna[i].tinggi_badan + '</td>' + 
+                        '<td class="action-icons">' +
+                          '<i class="bx bx-edit-alt edit-icon" onclick="editUser(\'' + pengguna[i].id_user + '\')" title="Edit"></i> ' +
+                          '<i class="bx bx-trash delete-icon" onclick="deleteUser(\'' + pengguna[i].id_user + '\')" title="Delete"></i>' +
+                        '</td>' +
+                        '</tr>';
+            }
+      
+            document.getElementById('tableBody').innerHTML = output;
           }
+        }
+        xhr.send();
       }
-      
-      // Mengirimkan permintaan
-      xhr.send(); 
-  }
-  
-  window.onload = loadData;
+      window.onload = loadData;
 
   const addButton = document.getElementById('addButton');
         const tableContainer = document.getElementById('tableContainer');
@@ -84,10 +76,58 @@ const body = document.querySelector("body"),
 
         dataForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            //masmu suruh coding disini bill ngroknya ta hodupim ak mau sarapan
-            formContainer.classList.remove('active');
-            tableContainer.classList.remove('hidden');
-            searchPlusContainer.classList.remove('hidden');
-            formTitle.classList.remove('active');
-            dataForm.reset();
+            
+            const formData = new FormData(dataForm);
+        
+            fetch('https://b56a-2001-448a-5122-5aab-a17a-4316-aedf-aa30.ngrok-free.app/Web-adek/Api/api.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User added successfully!');
+                    formContainer.classList.remove('active');
+                    tableContainer.classList.remove('hidden');
+                    searchPlusContainer.classList.remove('hidden');
+                    formTitle.classList.remove('active');
+                    dataForm.reset();
+                    loadData(); 
+                } else {
+                    throw new Error(data.message || 'Unknown error occurred');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the user: ' + error.message);
+            });
         });
+        function deleteUser(id_user) {
+            if (confirm("Are you sure you want to delete this user?")) {
+                fetch('delete_user.php', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id_user: id_user })
+                })
+                .then(response => response.text()) // Change to text() for debugging
+                .then(text => {
+                    console.log("Response:", text); // Log the response text
+                    return JSON.parse(text); // Then parse it as JSON
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('User deleted successfully!');
+                        loadData(); // Refresh the data table after deletion
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the user: ' + error.message);
+                });
+            }
+        }
+        
