@@ -320,3 +320,7 @@ table th {
 .search-plus-container.hidden {
     display: none;
 }
+
+.edit-icon, .delete-icon{
+    cursor: pointer;
+}

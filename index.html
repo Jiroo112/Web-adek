@@ -151,11 +151,48 @@
                   <input type="number" id="tinggiBadan" name="tinggiBadan" required />
                 </div>
                 <div class="button-group">
-                  <button type="submit" class="button button-save">Simpan</button>
+                  <button type="submit" class="button button-save" id="submitButton">Simpan</button>
                   <button type="button" class="button button-cancel" id="cancelButton">Batal</button>
                 </div>
               </form>
             </div>
+            <div class="form-container" id="editFormContainer">
+              <form id="editForm">
+                <div class="form-group">
+                  <label for="editIdUser">ID User</label>
+                  <input type="text" id="editIdUser" name="idUser" required readonly />
+                </div>
+                <div class="form-group">
+                  <label for="editNamaLengkap">Nama Lengkap</label>
+                  <input type="text" id="editNamaLengkap" name="namaLengkap" required />
+                </div>
+                <div class="form-group">
+                  <label for="editEmail">Email</label>
+                  <input type="email" id="editEmail" name="email" required />
+                </div>
+                <div class="form-group">
+                  <label for="editPassword">Password</label>
+                  <input type="password" id="editPassword" name="password" />
+                </div>
+                <div class="form-group">
+                  <label for="editNoHp">No HP</label>
+                  <input type="tel" id="editNoHp" name="noHp" required />
+                </div>
+                <div class="form-group">
+                  <label for="editBeratBadan">Berat Badan</label>
+                  <input type="number" id="editBeratBadan" name="beratBadan" required />
+                </div>
+                <div class="form-group">
+                  <label for="editTinggiBadan">Tinggi Badan</label>
+                  <input type="number" id="editTinggiBadan" name="tinggiBadan" required />
+                </div>
+                <div class="button-group">
+                  <button type="submit" class="button button-save" id="editSubmitButton">Simpan Perubahan</button>
+                  <button type="button" class="button button-cancel" id="editCancelButton">Batal</button>
+                </div>
+              </form>
+            </div>
+            
           </div>
         </div>
 

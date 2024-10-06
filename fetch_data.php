@@ -1,5 +1,5 @@
 <?php
-$apiUrl = 'https://b56a-2001-448a-5122-5aab-a17a-4316-aedf-aa30.ngrok-free.app/Web-adek/Api/api.php';
+$apiUrl = 'https://1fae-140-213-118-69.ngrok-free.app/latihan/adek_aplication/Api/api.php';
 
 $allowed_origins = [
     'http://localhost:8080',

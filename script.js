@@ -58,6 +58,9 @@ const body = document.querySelector("body"),
         const tableBody = document.getElementById('tableBody');
         const searchPlusContainer = document.getElementById('searchPlusContainer');
         const formTitle = document.getElementById('formTitle');
+        const editform = document.getElementById('editForm');
+        const editcontainer = document.getElementById('editFormContainer');
+        const editcancel = document.getElementById('editCancelButton');
 
         addButton.addEventListener('click', () => {
             tableContainer.classList.add('hidden');
@@ -74,12 +77,20 @@ const body = document.querySelector("body"),
             dataForm.reset();
         });
 
+        editcancel.addEventListener('click', () => {
+            editcontainer.classList.remove('active');
+            tableContainer.classList.remove('hidden');
+            searchPlusContainer.classList.remove('hidden');
+            formTitle.classList.remove('active');
+            dataForm.reset();
+        });
+
         dataForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
             const formData = new FormData(dataForm);
         
-            fetch('https://b56a-2001-448a-5122-5aab-a17a-4316-aedf-aa30.ngrok-free.app/Web-adek/Api/api.php', {
+            fetch('post_user.php', {
                 method: 'POST',
                 body: formData
             })
@@ -88,6 +99,34 @@ const body = document.querySelector("body"),
                 if (data.success) {
                     alert('User added successfully!');
                     formContainer.classList.remove('active');
+                    tableContainer.classList.remove('hidden');
+                    searchPlusContainer.classList.remove('hidden');
+                    dataForm.reset();
+                    loadData(); 
+                } else {
+                    throw new Error(data.message || 'Unknown error occurred');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the user: ' + error.message);
+            });
+        });
+
+        editform.addEventListener('submit', (e) =>{
+            e.preventDefault();
+            
+            const formData = new FormData(editform);
+        
+            fetch('update_user.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User added successfully!');
+                    editcontainer.classList.remove('active');
                     tableContainer.classList.remove('hidden');
                     searchPlusContainer.classList.remove('hidden');
                     formTitle.classList.remove('active');
@@ -102,6 +141,7 @@ const body = document.querySelector("body"),
                 alert('An error occurred while adding the user: ' + error.message);
             });
         });
+
         function deleteUser(id_user) {
             if (confirm("Are you sure you want to delete this user?")) {
                 fetch('delete_user.php', {
@@ -130,4 +170,35 @@ const body = document.querySelector("body"),
                 });
             }
         }
+
+        function editUser(id_user){
+            fetch(`get_user.php?id=${id_user}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const user = data.user;
+                    document.getElementById('editIdUser').value = user.id_user;
+                    document.getElementById('editNamaLengkap').value = user.nama_lengkap;
+                    document.getElementById('editEmail').value = user.email;
+                    document.getElementById('editPassword').value = user.password;
+                    document.getElementById('editNoHp').value = user.no_hp;
+                    document.getElementById('editBeratBadan').value = user.berat_badan;
+                    document.getElementById('editTinggiBadan').value = user.tinggi_badan;
+
+
+                    tableContainer.classList.add('hidden');
+                    editcontainer.classList.add('active');
+                    searchPlusContainer.classList.add('hidden');
+                    
+
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while fetching user data: ' + error.message);
+            });
+        }
+        
         

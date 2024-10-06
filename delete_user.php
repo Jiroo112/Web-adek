@@ -7,7 +7,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "diet_application";
+$dbname = "adek_aplication";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
