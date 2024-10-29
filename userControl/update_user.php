@@ -1,19 +1,11 @@
 <?php
-header('Content-Type: application/json');
 
-// Database configuration
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "adek_aplication";
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
-// Create connection
-$koneksi = new mysqli($host, $username, $password, $database);
-
-// Check connection
-if ($koneksi->connect_error) {
-    die(json_encode(['success' => false, 'message' => "Connection failed: " . $koneksi->connect_error]));
-}
+include 'koneksi.php';
+ob_clean();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_user = $_POST['idUser'];

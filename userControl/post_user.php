@@ -4,17 +4,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "adek_aplication";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'koneksi.php';
+ob_clean();
 
 // Handle POST request to add new user
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "INSERT INTO data_pengguna (id_user, nama_lengkap, email, password, no_hp, berat_badan, tinggi_badan) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
     
-    $stmt = $conn->prepare($sql);
+    $stmt = $koneksi->prepare($sql);
     $stmt->bind_param("sssssii", $id_user, $nama_lengkap, $email, $password, $no_hp, $berat_badan, $tinggi_badan);
     
     if ($stmt->execute()) {
@@ -39,6 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $stmt->close();
-    $conn->close();
+    $koneksi->close();
     exit();
 }
