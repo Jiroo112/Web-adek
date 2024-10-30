@@ -68,65 +68,81 @@ const body = document.querySelector("body"),
             alert('An error occurred while loading the data: ' + error.message);
         });
 }
-    function loadMenu() {
-        fetch('menuControl/getMenu.php')
-            .then(response => response.text())
-            .then(text => {
-                console.log("Response from server:", text);
-                let data;
-                try {
-                    data = JSON.parse(text); 
-                } catch (error) {
-                    console.error('JSON parsing error:', error);
-                    alert('Invalid JSON format: ' + error.message);
-                    return;
-                }
+function loadMenu() {
+    fetch('menuControl/getMenu.php')
+        .then(response => response.text())
+        .then(text => {
+            console.log("Response from server:", text);
+            let data;
+            try {
+                data = JSON.parse(text); 
+            } catch (error) {
+                console.error('JSON parsing error:', error);
+                alert('Invalid JSON format: ' + error.message);
+                return;
+            }
 
-                if (data && data.menu) {
-                    const tableBody = document.getElementById('data_menu');
-                    tableBody.innerHTML = '';
+            if (data && data.menu) {
+                const tableBody = document.getElementById('data_menu');
+                tableBody.innerHTML = '';
 
-                    data.menu.forEach(menu => {
-                        const row = document.createElement('tr');
+                data.menu.forEach(menu => {
+                    const row = document.createElement('tr');
+                    const imgSrc = menu.gambar ? `menuControl/uploads/${menu.gambar}` : '';
 
-                        // Jika menu.gambar ada, buat URL untuk gambar
-                        const imgSrc = menu.gambar ? `menuControl/uploads/${menu.gambar}` : '';
+                    // Konversi kategori_menu menggunakan nilai dari API
+                    let kategoriText;
+                    switch(menu.kategori_menu) {
+                        case 'makanan_berat':
+                            kategoriText = 'Makanan Berat';
+                            break;
+                        case 'makanan_ringan':
+                            kategoriText = 'Makanan Ringan';
+                            break;
+                        case 'minuman':
+                            kategoriText = 'Minuman';
+                            break;
+                        default:
+                            kategoriText = '-'; // Nilai default jika tidak cocok
+                    }
 
-                        row.innerHTML = `
-                            <td>${menu.id_menu}</td>
-                            <td>${menu.nama_menu}</td>
-                            <td>${menu.kategori_menu}</td>
-                            <td>${menu.protein}</td>
-                            <td>${menu.karbohidrat}</td>
-                            <td>${menu.lemak}</td>
-                            <td>${menu.kalori}</td>
-                            <td>${menu.resep}</td>
-                            <td>
-                                <img src="${imgSrc}" alt="Gambar Menu" width="50" height="50">
-                            </td>
-                            <td>${menu.satuan}</td>
-                            <td>
-                                <i class="bx bx-edit-alt edit-icon" onclick="editMenu('${menu.id_menu}')" title="Edit"></i> 
-                                <i class="bx bx-trash delete-icon" onclick="deleteMenu('${menu.id_menu}')" title="Delete"></i>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
+                    // Memastikan ada nilai untuk satuan
+                    const satuanText = menu.satuan ? menu.satuan : '-';
 
-                } else {
-                    console.error('Error loading data: menu not found in response');
-                    alert('Error loading data: menu not found in response');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while loading the data: ' + error.message);
-            });
+                    // Isi row tabel
+                    row.innerHTML = `
+                        <td>${menu.id_menu}</td>
+                        <td>${menu.nama_menu}</td>
+                        <td>${kategoriText}</td>
+                        <td>${menu.protein || '0'}</td>
+                        <td>${menu.karbohidrat || '0'}</td>
+                        <td>${menu.lemak || '0'}</td>
+                        <td>${menu.kalori || '0'}</td>
+                        <td>${menu.resep || '-'}</td>
+                        <td>
+                            <img src="${imgSrc}" alt="Gambar Menu" width="50" height="50">
+                        </td>
+                        <td>${satuanText}</td>
+                        <td>
+                            <i class="bx bx-edit-alt edit-icon" onclick="editMenu('${menu.id_menu}')" title="Edit"></i> 
+                            <i class="bx bx-trash delete-icon" onclick="deleteMenu('${menu.id_menu}')" title="Delete"></i>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } else {
+                console.error('Error loading data: menu not found in response');
+                alert('Error loading data: menu not found in response');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while loading the data: ' + error.message);
+        });
     }
 
-
-
-    
+   
     // Call loadData when the page loads
     document.addEventListener('DOMContentLoaded', loadData);
     document.addEventListener('DOMContentLoaded', loadMenu);
@@ -256,33 +272,50 @@ const body = document.querySelector("body"),
             }
         });
 
-        editmenuform.addEventListener('submit', (e)=> {
+        editmenuform.addEventListener('submit', async (e) => {
             e.preventDefault();
-
+        
             const formData = new FormData(editmenuform);
-            fetch('menuControl/updateMenu.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
+            
+            // Log form data for debugging
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            
+            try {
+                const response = await fetch('menuControl/updateMenu.php', {
+                    method: 'POST',
+                    body: formData
+                });
+        
+                const text = await response.text();
+                console.log("Server response:", text); // For debugging
+                
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (error) {
+                    console.error("JSON parsing error:", error);
+                    alert('Server response was not in the expected format');
+                    return;
+                }
+        
                 if (data.success) {
-                    alert('User added successfully!');
-                    editcontainer.classList.remove('active');
+                    alert('Menu updated successfully!');
+                    editmenucontainer.classList.remove('active');
                     tableMenu.classList.remove('hidden');
                     searchPlusContainer.classList.remove('hidden');
-                    dataMenu.reset();
+                    editmenuform.reset();
                     loadMenu();
                 } else {
                     throw new Error(data.message || 'Unknown error occurred');
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while adding the user: ' + error.message);
-            });
-
-        })
+                alert('An error occurred while updating the menu: ' + error.message);
+            }
+        });
+        
 
         editform.addEventListener('submit', (e) =>{
             e.preventDefault();
@@ -401,42 +434,74 @@ const body = document.querySelector("body"),
             });
         }
 
-        function editMenu(id_menu){
+        function editMenu(id_menu) {
             fetch(`menuControl/editMenu.php?id=${id_menu}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const menu = data.menu;
-                // Populate the edit form
-                    document.getElementById('editid_menu').value = menu.id_menu;
-                    document.getElementById('editnama_menu').value = menu.nama_menu;
-                    document.getElementById('editkategori_menu').value = menu.kategori_menu;
-                    document.getElementById('editprotein').value = menu.protein;
-                    document.getElementById('editkarbohidrat').value = menu.karbohidrat;
-                    document.getElementById('editlemak').value = menu.lemak;
-                    document.getElementById('editkalori').value = menu.kalori;
-                    document.getElementById('editresep').value = menu.resep;
-                    document.getElementById('editsatuan').value = menu.satuan;
-                    
-                    // Update file name display if there's an existing image
-                    if (menu.gambar) {
-                        document.getElementById('editFileName').textContent = menu.gambar;
-                        document.getElementById('editRemoveFile').style.display = 'inline';
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const menu = data.menu;
+                        console.log('Retrieved menu data:', menu); // Debug log
+        
+                        // Populate form fields
+                        document.getElementById('editid_menu').value = menu.id_menu;
+                        document.getElementById('editnama_menu').value = menu.nama_menu || '';
+                        
+                        // Set kategori_menu
+                        const kategoriSelect = document.getElementById('editkategori_menu');
+                        if (kategoriSelect && menu.kategori_menu) {
+                            console.log('Setting kategori_menu to:', menu.kategori_menu); // Debug log
+                            kategoriSelect.value = menu.kategori_menu;
+                        }
+        
+                        // Numeric fields
+                        document.getElementById('editprotein').value = menu.protein || '0';
+                        document.getElementById('editkarbohidrat').value = menu.karbohidrat || '0';
+                        document.getElementById('editlemak').value = menu.lemak || '0';
+                        document.getElementById('editkalori').value = menu.kalori || '0';
+                        document.getElementById('editresep').value = menu.resep || '';
+        
+                        // Set satuan
+                        const satuanSelect = document.getElementById('editsatuan');
+                        if (satuanSelect && menu.satuan) {
+                            console.log('Setting satuan to:', menu.satuan); // Debug log
+                            satuanSelect.value = menu.satuan;
+                        }
+        
+                        // Handle file display
+                        const editFileNameSpan = document.getElementById('editFileName');
+                        const editRemoveFileSpan = document.getElementById('editRemoveFile');
+                        
+                        if (menu.gambar) {
+                            editFileNameSpan.textContent = menu.gambar;
+                            editRemoveFileSpan.style.display = 'inline';
+                            editFileNameSpan.style.cursor = 'pointer';
+                            editFileNameSpan.onclick = () => {
+                                showPreview(`menuControl/uploads/${menu.gambar}`);
+                            };
+                        } else {
+                            editFileNameSpan.textContent = 'No file chosen';
+                            editRemoveFileSpan.style.display = 'none';
+                        }
+        
+                        // Update UI state
+                        tableMenu.classList.add('hidden');
+                        editmenucontainer.classList.add('active');
+                        searchPlusContainer.classList.add('hidden');
+        
+                        console.log('Form populated with values:', {
+                            kategori_menu: kategoriSelect.value,
+                            satuan: satuanSelect.value
+                        }); // Debug log
+                    } else {
+                        alert('Error: ' + data.message);
                     }
-
-                    tableMenu.classList.add('hidden');
-                    editmenucontainer.classList.add('active');
-                    searchPlusContainer.classList.add('hidden');
-
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while fetching user data: ' + error.message);
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while fetching menu data: ' + error.message);
+                });
         }
+        
 
         function searchFromDatabase() {
             const searchInput = document.getElementById('searchUser');
@@ -539,32 +604,33 @@ const body = document.querySelector("body"),
             const modal = document.getElementById('previewModal');
             modal.style.display = 'none';
         }
-
-        const editFileInput = document.getElementById('editFileUpload');
         const editFileNameSpan = document.getElementById('editFileName');
         const editRemoveFileSpan = document.getElementById('editRemoveFile');
 
-        editFileInput.addEventListener('change', function () {
-        if (editFileInput.files.length > 0) {
-            editFileNameSpan.textContent = editFileInput.files[0].name;
-            editRemoveFileSpan.style.display = 'inline';
-            const file = this.files[0];
-            
-            editFileNameSpan.textContent = file.name;
-            const previewUrl = URL.createObjectURL(file);
-            editFileNameSpan.onclick = function() {
-            showPreview(previewUrl);
-            };
-        } else {
-            editFileNameSpan.textContent = 'No file chosen';
-        }
-        });
+         // Add file input handler
+         const editFileInput = document.getElementById('editFileUpload');
+         if (editFileInput) {
+             editFileInput.addEventListener('change', function() {
+                 const editFileNameSpan = document.getElementById('editFileName');
+                 const editRemoveFileSpan = document.getElementById('editRemoveFile');
+                 
+                 if (this.files.length > 0) {
+                     editFileNameSpan.textContent = this.files[0].name;
+                     editRemoveFileSpan.style.display = 'inline';
+                     
+                     // Preview for new file
+                     const file = this.files[0];
+                     const previewUrl = URL.createObjectURL(file);
+                     editFileNameSpan.onclick = () => showPreview(previewUrl);
+                 } else {
+                     editFileNameSpan.textContent = 'No file chosen';
+                     editRemoveFileSpan.style.display = 'none';
+                 }
+             });
 
         editRemoveFileSpan.addEventListener('click', function () {
         editFileInput.value = '';  // Clear file input
         editFileNameSpan.textContent = 'No file chosen';
         editRemoveFileSpan.style.display = 'none';  // Hide remove button
         });
-
-
-        
+    }

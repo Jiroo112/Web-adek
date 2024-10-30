@@ -198,13 +198,13 @@
                   <input type="text" id="editnama_menu" name="nama_menu" required>
               </div>              
               <div class="form-group">
-                  <label for="kategori_menu">Kategori Menu</label>
-                  <select id="editkategori_menu" name="kategori_menu" required>
-                      <option value="makanan_berat">Makanan Berat</option>
-                      <option value="makanan_ringan">Makanan Ringan</option>
-                      <option value="minuman">Minuman</option>
-                  </select>
-              </div>                
+                <label for="kategori_menu">Kategori Menu</label>
+                <select id="editkategori_menu" name="kategori_menu" required>
+                    <option value="makanan_berat">Makanan Berat</option>
+                    <option value="makanan_ringan">Makanan Ringan</option>
+                    <option value="minuman">Minuman</option>
+                </select>
+            </div>        
               <div class="form-group">
                   <label for="protein">Protein (g)</label>
                   <input type="number" id="editprotein" name="protein" required>
@@ -236,13 +236,13 @@
                 </div>
               </div>
               <div class="form-group">
-                  <label for="editsatuan">Satuan</label>
-                  <select id="editsatuan" name="editsatuan" required>
-                      <option value="porsi">Porsi</option>
-                      <option value="mangkuk">Mangkuk</option>
-                      <option value="pcs">Pcs</option>
-                  </select>
-              </div>
+                <label for="satuan">Satuan</label>
+                <select id="editsatuan" name="satuan" required> <!-- Perbaikan di sini: name="satuan" -->
+                    <option value="porsi">Porsi</option>
+                    <option value="mangkuk">Mangkuk</option>
+                    <option value="pcs">Pcs</option>
+                </select>
+            </div>
               <div class="button-group">
                 <button type="submit" class="button button-save" id="editsubmitMenu">Simpan</button>
                 <button type="button" class="button button-cancel" id="editcancelMenu">Batal</button>
